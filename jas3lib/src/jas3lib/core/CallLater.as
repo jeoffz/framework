@@ -20,6 +20,8 @@ package jas3lib.core {
         private static var _millisecondCallsHead:LaterCallVar;
         private static var _millisecondCallsTail:LaterCallVar;
 
+        private static var additionalDelay:uint;
+
         public static function init(stage:Stage):void {
             _stage = stage;
             _timestamp = getTimer();
@@ -31,6 +33,13 @@ package jas3lib.core {
             _frameCallsTail = _frameCallsHead;
             _millisecondCallsHead = new LaterCallVar();
             _millisecondCallsTail = _millisecondCallsHead;
+            additionalDelay = 0;
+        }
+
+        private static function checkInit():void {
+            if(_stage == null) {
+                throw new Error("CallLater.init must call first.");
+            }
         }
 
         private static function onEnterFrame(event:Event):void {
@@ -41,8 +50,9 @@ package jas3lib.core {
         }
 
         private static function timeElapsed(elapsedTime:uint):void {
-            var q:LaterCallVar, p:LaterCallVar;
+            additionalDelay = elapsedTime;
 
+            var q:LaterCallVar, p:LaterCallVar;
             p = _frameCallsHead;
             while(p.next) {
                 q = p.next;
@@ -80,9 +90,12 @@ package jas3lib.core {
                     p = p.next;
                 }
             }
+
+            additionalDelay = 0;
         }
 
         public static function delayCall(func:Function, funcParams:Array = null, millisecond:int = 50, unique:Boolean = false):void {
+            checkInit();
             var callVar:LaterCallVar;
             if(unique) {
                 callVar = _uniqueMillisecondCall[func];
@@ -99,11 +112,12 @@ package jas3lib.core {
             }
             callVar.func = func;
             callVar.funcParams = funcParams;
-            callVar.delay = millisecond;
+            callVar.delay = millisecond+(getTimer()-_timestamp)+additionalDelay;
             callVar.unique = unique;
         }
 
         public static function delayframeCall(func:Function, funcParams:Array = null, frameCount:int = 1, unique:Boolean = false):void {
+            checkInit();
             var callVar:LaterCallVar;
             if(unique) {
                 callVar = _uniqueFrameCall[func];
@@ -121,6 +135,8 @@ package jas3lib.core {
             callVar.func = func;
             callVar.funcParams = funcParams;
             callVar.delay = frameCount;
+            if(additionalDelay)
+                callVar.delay += 1;
             callVar.unique = unique;
         }
 
@@ -133,7 +149,7 @@ package jas3lib.core {
 
         private static function createLaterCallVar():LaterCallVar {
             if(_pool.length > 0) {
-                return _pool[_pool.length-1];
+                return _pool.pop() as LaterCallVar;
             } else {
                 return new LaterCallVar();
             }

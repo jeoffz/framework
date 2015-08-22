@@ -4,6 +4,11 @@
     <configurations>
       <configuration name="test" pure-as="true" main-class="Test" output-file="test.swf" output-folder="$MODULE_DIR$/../out/production/test" wrapper-template-path="$MODULE_DIR$/html-template">
         <dependencies target-player="16.0">
+          <entries>
+            <entry module-name="jas3lib" build-configuration-name="jas3lib">
+              <dependency linkage="Merged" />
+            </entry>
+          </entries>
           <sdk name="Flex SDK" />
         </dependencies>
         <compiler-options />
@@ -13,6 +18,20 @@
       </configuration>
       <configuration name="linklistTest" pure-as="true" main-class="LinkListTest" output-file="linklistTest.swf" output-folder="$MODULE_DIR$/../out/production/test">
         <dependencies target-player="16.0">
+          <sdk name="Flex SDK" />
+        </dependencies>
+        <compiler-options />
+        <packaging-air-desktop />
+        <packaging-android />
+        <packaging-ios />
+      </configuration>
+      <configuration name="callLaterTest" pure-as="true" main-class="CallLaterTest" output-file="callLaterTest.swf" output-folder="$MODULE_DIR$/../out/production/test">
+        <dependencies target-player="16.0">
+          <entries>
+            <entry module-name="jas3lib" build-configuration-name="jas3lib">
+              <dependency linkage="Merged" />
+            </entry>
+          </entries>
           <sdk name="Flex SDK" />
         </dependencies>
         <compiler-options />
@@ -30,5 +49,6 @@
     </content>
     <orderEntry type="jdk" jdkName="Flex SDK" jdkType="Flex SDK Type (new)" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="jas3lib" exported="" />
   </component>
 </module>
