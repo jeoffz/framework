@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="Flex" version="4">
-  <component name="FlexBuildConfigurationManager" active="GreenSock">
+  <component name="FlexBuildConfigurationManager" active="jas3lib">
     <configurations>
-      <configuration name="GreenSock" pure-as="true" output-type="Library" output-file="greensock.swc" output-folder="$MODULE_DIR$/../out/production/GreenSock">
+      <configuration name="jas3lib" pure-as="true" output-type="Library" output-file="jas3lib.swc" output-folder="$MODULE_DIR$/../out/production/jas3lib">
         <dependencies target-player="16.0">
           <sdk name="Flex SDK" />
         </dependencies>

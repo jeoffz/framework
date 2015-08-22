@@ -1,8 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="Flex" version="4">
-  <component name="FlexBuildConfigurationManager" active="GreenSock">
+  <component name="FlexBuildConfigurationManager" active="test">
     <configurations>
-      <configuration name="GreenSock" pure-as="true" output-type="Library" output-file="greensock.swc" output-folder="$MODULE_DIR$/../out/production/GreenSock">
+      <configuration name="test" pure-as="true" main-class="Test" output-file="test.swf" output-folder="$MODULE_DIR$/../out/production/test" wrapper-template-path="$MODULE_DIR$/html-template">
+        <dependencies target-player="16.0">
+          <sdk name="Flex SDK" />
+        </dependencies>
+        <compiler-options />
+        <packaging-air-desktop />
+        <packaging-android />
+        <packaging-ios />
+      </configuration>
+      <configuration name="linklistTest" pure-as="true" main-class="LinkListTest" output-file="linklistTest.swf" output-folder="$MODULE_DIR$/../out/production/test">
         <dependencies target-player="16.0">
           <sdk name="Flex SDK" />
         </dependencies>

@@ -3,7 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/GreenSock/GreenSock.iml" filepath="$PROJECT_DIR$/GreenSock/GreenSock.iml" />
-      <module fileurl="file://$PROJECT_DIR$/frameworks.iml" filepath="$PROJECT_DIR$/frameworks.iml" />
+      <module fileurl="file://$PROJECT_DIR$/jas3lib/jas3lib.iml" filepath="$PROJECT_DIR$/jas3lib/jas3lib.iml" />
+      <module fileurl="file://$PROJECT_DIR$/test/test.iml" filepath="$PROJECT_DIR$/test/test.iml" />
     </modules>
   </component>
 </project>
