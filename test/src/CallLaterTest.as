@@ -12,9 +12,9 @@ package {
             super();
 
             CallLater.init(stage);
-            CallLater.delayCall(heihei,["1",1],5000);
-            CallLater.delayCall(heihei,["5",5],2000);
-//            CallLater.nextframeCall(hehe);
+//            CallLater.delayCall(heihei,["1",1],5000,true);
+//            CallLater.delayCall(heihei,["5",5],2000);
+            CallLater.nextframeCall(hehe);
             trace(getTimer());
             trace("init");
         }
@@ -22,15 +22,15 @@ package {
         private function hehe():void {
             trace("hehe");
             trace(getTimer());
-            CallLater.nextframeCall(hehe);
+//            CallLater.nextframeCall(hehe);
         }
 
         private function heihei(str:String,value:int):void {
             trace("heihei",str,value);
             trace(getTimer());
-            CallLater.delayCall(heihei,["2",2],4000);
-            CallLater.delayCall(heihei,["4",4],5000);
-            CallLater.delayCall(heihei,["3",3],4000);
+            CallLater.delayCall(heihei,["2",2],2000,true);
+//            CallLater.delayCall(heihei,["4",4],5000);
+//            CallLater.delayCall(heihei,["3",3],4000);
         }
     }
 }

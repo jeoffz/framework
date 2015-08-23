@@ -10,30 +10,19 @@ package jas3lib.core {
     public class CallLater {
 
         private static var _stage:Stage;
-        private static var _timestamp:uint;
-
-        private static var _uniqueFrameCall:Dictionary;
-        private static var _uniqueMillisecondCall:Dictionary;
-
-        private static var _frameCallsHead:LaterCallVar;
-        private static var _frameCallsTail:LaterCallVar;
-        private static var _millisecondCallsHead:LaterCallVar;
-        private static var _millisecondCallsTail:LaterCallVar;
-
-        private static var additionalDelay:uint;
+        private static var _curFrame:uint;
+        private static var _uniqueCall:Dictionary;
+        private static var _callsHead:LaterCallVar;
+        private static var _callsTail:LaterCallVar;
 
         public static function init(stage:Stage):void {
             _stage = stage;
-            _timestamp = getTimer();
             _stage.addEventListener(Event.ENTER_FRAME,onEnterFrame);
 
-            _uniqueFrameCall = new Dictionary(true);
-            _uniqueMillisecondCall = new Dictionary(true);
-            _frameCallsHead = new LaterCallVar();
-            _frameCallsTail = _frameCallsHead;
-            _millisecondCallsHead = new LaterCallVar();
-            _millisecondCallsTail = _millisecondCallsHead;
-            additionalDelay = 0;
+            _curFrame = 0;
+            _uniqueCall = new Dictionary(true);
+            _callsHead = new LaterCallVar();
+            _callsTail = _callsHead;
         }
 
         private static function checkInit():void {
@@ -43,101 +32,60 @@ package jas3lib.core {
         }
 
         private static function onEnterFrame(event:Event):void {
+            _curFrame++;
             var timestamp:uint = getTimer();
-            var elapsedTime:uint = timestamp-_timestamp;
-            _timestamp = timestamp;
-            timeElapsed(elapsedTime);
-        }
 
-        private static function timeElapsed(elapsedTime:uint):void {
-            additionalDelay = elapsedTime;
-
-            var q:LaterCallVar, p:LaterCallVar;
-            p = _frameCallsHead;
+            var q:LaterCallVar, p:LaterCallVar, elapsed:uint;
+            p = _callsHead;
             while(p.next) {
                 q = p.next;
-                q.delay -= 1;
-                if(q.delay <= 0) {
+                elapsed = q.frameTag ? _curFrame : timestamp;
+                if(q.delay <= elapsed) {
                     p.next = q.next;
                     if(q.unique) {
-                        delete _uniqueFrameCall[q.func];
+                        delete _uniqueCall[q.func];
                     }
-                    if(q == _frameCallsTail) {
-                        _frameCallsTail = p;
-                    }
+                    if(q == _callsTail) { _callsTail = p; }
                     q.func.apply(null,q.funcParams);
                     disposeLaterCallVar(q);
                 } else  {
                     p = p.next;
                 }
             }
-
-            p = _millisecondCallsHead;
-            while(p.next) {
-                q = p.next;
-                q.delay -= elapsedTime;
-                if(q.delay <= 0) {
-                    p.next = q.next;
-                    if(q.unique) {
-                        delete _uniqueMillisecondCall[q.func];
-                    }
-                    if(q == _millisecondCallsTail) {
-                        _millisecondCallsTail = p;
-                    }
-                    q.func.apply(null,q.funcParams);
-                    disposeLaterCallVar(q);
-                } else  {
-                    p = p.next;
-                }
-            }
-
-            additionalDelay = 0;
         }
 
-        public static function delayCall(func:Function, funcParams:Array = null, millisecond:int = 50, unique:Boolean = false):void {
+        public static function delayCall(func:Function, funcParams:Array = null, delay:int = 50, unique:Boolean = false, frameTag:Boolean = false):void {
             checkInit();
+
+            if(frameTag) {
+                delay += _curFrame;
+            } else {
+                delay += getTimer();
+            }
+
             var callVar:LaterCallVar;
             if(unique) {
-                callVar = _uniqueMillisecondCall[func];
+                callVar = _uniqueCall[func];
                 if(!callVar) {
                     callVar = createLaterCallVar();
-                    _uniqueMillisecondCall[func] = callVar;
-                    _millisecondCallsTail.next = callVar;
-                    _millisecondCallsTail = callVar;
+                    _uniqueCall[func] = callVar;
+                    _callsTail.next = callVar;
+                    _callsTail = callVar;
                 }
             } else {
                 callVar = createLaterCallVar();
-                _millisecondCallsTail.next = callVar;
-                _millisecondCallsTail = callVar;
+                _callsTail.next = callVar;
+                _callsTail = callVar;
             }
             callVar.func = func;
             callVar.funcParams = funcParams;
-            callVar.delay = millisecond+(getTimer()-_timestamp)+additionalDelay;
+            callVar.frameTag = frameTag;
+            callVar.delay = delay;
             callVar.unique = unique;
         }
 
-        public static function delayframeCall(func:Function, funcParams:Array = null, frameCount:int = 1, unique:Boolean = false):void {
-            checkInit();
-            var callVar:LaterCallVar;
-            if(unique) {
-                callVar = _uniqueFrameCall[func];
-                if(!callVar) {
-                    callVar = createLaterCallVar();
-                    _uniqueFrameCall[func] = callVar;
-                    _frameCallsTail.next = callVar;
-                    _frameCallsTail = callVar;
-                }
-            } else {
-                callVar = createLaterCallVar();
-                _frameCallsTail.next = callVar;
-                _frameCallsTail = callVar;
-            }
-            callVar.func = func;
-            callVar.funcParams = funcParams;
-            callVar.delay = frameCount;
-            if(additionalDelay)
-                callVar.delay += 1;
-            callVar.unique = unique;
+        public static function delayframeCall(func:Function, funcParams:Array = null, delayframe:int = 1, unique:Boolean = false):void {
+            delayCall(func, funcParams, delayframe, unique, true);
         }
 
         public static function nextframeCall(func:Function, funcParams:Array = null):void {
@@ -145,7 +93,7 @@ package jas3lib.core {
         }
 
         private static var _pool:Array = new Array();
-        private static const poolSize:int = 50;
+        private static const poolSize:int = 80;
 
         private static function createLaterCallVar():LaterCallVar {
             if(_pool.length > 0) {
@@ -169,6 +117,7 @@ internal class LaterCallVar {
     public var func:Function;
     public var funcParams:Array;
     public var delay:int;
+    public var frameTag:Boolean;
     public var unique:Boolean;
 
     public var next:LaterCallVar;
@@ -177,6 +126,7 @@ internal class LaterCallVar {
         func = null;
         funcParams = null;
         delay = 0;
+        frameTag = false;
         unique = false;
         next = null;
     }
