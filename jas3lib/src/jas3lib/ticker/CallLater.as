@@ -1,7 +1,7 @@
 /**
  * Created by zhujiahe on 2015/8/22.
  */
-package jas3lib.core {
+package jas3lib.ticker {
     import flash.display.Stage;
     import flash.events.Event;
     import flash.utils.Dictionary;

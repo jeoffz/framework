@@ -5,7 +5,7 @@ package {
     import flash.display.Sprite;
     import flash.utils.getTimer;
 
-    import jas3lib.core.CallLater;
+    import jas3lib.ticker.CallLater;
 
     public class CallLaterTest extends Sprite {
         public function CallLaterTest() {
