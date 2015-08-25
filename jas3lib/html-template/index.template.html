@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+
+<head>
+    <title>${title}</title>
+    <meta name="google" value="notranslate"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7"/>
+    <script type="text/javascript" src="swfobject.js"></script>
+    <script type="text/javascript" src="swffit.js"></script>
+
+    <script type="text/javascript">
+        var flashvars = {
+            rootPath: "",
+            sslPath: "",
+            imagePath: ""
+        };
+        var params = {
+            quality: "high",
+            scale: "noscale",
+            wmode: "window",
+            allowscriptaccess: "always",
+            bgcolor: "${bgcolor}",
+            allowFullScreen: "true"
+
+        };
+        var attributes = {
+            id: "flashContent",
+            name: "flashContent"
+        };
+        swfobject.embedSWF("${swf}.swf", "flashContent", "100%", "100%", "10.0.0", "expressInstall.swf", flashvars, params, attributes);
+        swffit.fit("flashContent", "${width}", "${height}");
+    </script>
+
+    <style type="text/css">
+        /*hide from ie on mac\*/
+        html {
+            height: 100%;
+            overflow: hidden
+        }
+
+        #flashContent {
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+        }
+
+        /* end hide */
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background-color: #ffffff;
+        }
+    </style>
+
+</head>
+
+<body>
+<div id="flashContent">
+    <p>
+        To view this page ensure that Adobe Flash Player version
+        10.0.0 or greater is installed.
+    </p>
+    <script type="text/javascript">
+        var pageHost = ((document.location.protocol == "https:") ? "https://" : "http://");
+        document.write("<a href='http://www.adobe.com/go/getflashplayer'><img src='"
+                + pageHost + "www.adobe.com/images/shared/download_buttons/get_flash_player.gif' alt='Get Adobe Flash player' /></a>");
+    </script>
+</div>
+
+<div>
+    <!--站长统计-->
+    <script src="http://s11.cnzz.com/z_stat.php?id=1256180876&web_id=1256180876" language="JavaScript"></script>
+</div>
+
+</body>
+</html>
