@@ -1,7 +1,7 @@
 /**
  * Created by zhujiahe on 2015/8/7.
  */
-package {
+package simplyFL.skins {
     import flash.display.Loader;
     import flash.events.Event;
     import flash.system.ApplicationDomain;
