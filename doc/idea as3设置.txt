@@ -1,0 +1,6 @@
+1、Eclipse风格快捷键：Settings -> Keymap -> Eclipse
+2、显示行号：Settings -> Editor -> General -> Appearance -> Show line numbers
+3、类缩进：Settings -> Editor -> Code Style -> ActionScript -> Other -> Indent package statement children
+4、修改${USER}变量名：IDE的安装目录/bin下面的idea.exe.vmoptions 和idea64.exe.vmoptions这两个文件，在里面添加 -Duser.name=zhujiahe
+5、代码补全大小写智能提示：Settings -> Editor -> General -> Code completion -> Case sensitive completion = None
+6、JSFL插件：JSFL Support
