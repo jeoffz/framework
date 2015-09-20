@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/GreenSock/GreenSock.iml" filepath="$PROJECT_DIR$/GreenSock/GreenSock.iml" />
       <module fileurl="file://$PROJECT_DIR$/Test/Test.iml" filepath="$PROJECT_DIR$/Test/Test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/doc/doc.iml" filepath="$PROJECT_DIR$/doc/doc.iml" />
       <module fileurl="file://$PROJECT_DIR$/jas3lib/jas3lib.iml" filepath="$PROJECT_DIR$/jas3lib/jas3lib.iml" />
       <module fileurl="file://$PROJECT_DIR$/preloadswf/preloadswf.iml" filepath="$PROJECT_DIR$/preloadswf/preloadswf.iml" />
       <module fileurl="file://$PROJECT_DIR$/simplyFL/simplyFL.iml" filepath="$PROJECT_DIR$/simplyFL/simplyFL.iml" />
