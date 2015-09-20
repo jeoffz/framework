@@ -1,0 +1,438 @@
+// Copyright 2007. Adobe Systems Incorporated. All Rights Reserved.
+package simplyFL.containers {
+
+    import flash.display.DisplayObject;
+    import flash.display.Graphics;
+    import flash.display.Shape;
+    import flash.events.MouseEvent;
+    import flash.geom.Rectangle;
+
+    import simplyFL.core.UIComponent;
+
+    //--------------------------------------
+    //  Events
+    //--------------------------------------
+
+	[Event(name="scroll", type="fl.events.ScrollEvent")]
+	
+    //--------------------------------------
+    //  Styles
+    //--------------------------------------
+
+    [Style(name="downArrowDisabledSkin", type="Class")]
+
+    [Style(name="downArrowDownSkin", type="Class")]
+
+    [Style(name="downArrowOverSkin", type="Class")]
+
+    [Style(name="downArrowUpSkin", type="Class")]
+
+    [Style(name="thumbDisabledSkin", type="Class")]
+
+    [Style(name="thumbDownSkin", type="Class")]
+
+    [Style(name="thumbOverSkin", type="Class")]
+
+    [Style(name="thumbUpSkin", type="Class")]
+
+    [Style(name="trackDisabledSkin", type="Class")]
+
+    [Style(name="trackDownSkin", type="Class")]
+
+    [Style(name="trackOverSkin", type="Class")]
+
+    [Style(name="trackUpSkin", type="Class")]
+
+    [Style(name="upArrowDisabledSkin", type="Class")]
+
+    [Style(name="upArrowDownSkin", type="Class")]
+
+    [Style(name="upArrowOverSkin", type="Class")]
+
+    [Style(name="upArrowUpSkin", type="Class")]
+
+    [Style(name="thumbIcon", type="Class")]
+
+    [Style(name="repeatDelay", type="Number", format="Time")]
+
+    [Style(name="repeatInterval", type="Number", format="Time")]
+
+    [Style(name="skin", type="Class")]
+    [Style(name="contentPadding", type="Number", format="Length")]
+
+    [Style(name="disabledAlpha", type="Number", format="Length")]
+
+
+    //--------------------------------------
+    //  Class description
+    //--------------------------------------
+
+	public class BaseScrollPane extends UIComponent {
+
+		protected var _verticalScrollBar:ScrollBar;
+
+		protected var _horizontalScrollBar:ScrollBar;
+
+		protected var contentScrollRect:Rectangle;
+
+		protected var disabledOverlay:Shape;
+
+		protected var background:DisplayObject;
+
+		protected var contentWidth:Number=0;
+
+		protected var contentHeight:Number=0;
+
+		protected var _horizontalScrollPolicy:String;
+
+		protected var _verticalScrollPolicy:String;
+
+		protected var contentPadding:Number=0;
+
+		protected var availableWidth:Number;
+
+		protected var availableHeight:Number;
+
+		protected var vOffset:Number = 0;
+
+		protected var vScrollBar:Boolean;
+
+		protected var hScrollBar:Boolean;
+
+		protected var _maxHorizontalScrollPosition:Number = 0;		
+
+		protected var _horizontalPageScrollSize:Number = 0;	
+
+		protected var _verticalPageScrollSize:Number = 0;
+
+		protected var defaultLineScrollSize:Number = 4;
+
+		protected var useFixedHorizontalScrolling:Boolean = false; // if false, uses contentWidth to determine hscroll, otherwise uses fixed _maxHorizontalScroll value
+
+		protected var _useBitmpScrolling:Boolean = false;
+
+		private static var defaultStyles:Object = {	 
+											repeatDelay:500,repeatInterval:35,
+											skin:"ScrollPane_upSkin",
+											contentPadding:0,
+											disabledAlpha:0.5
+											};
+
+		public static function getStyleDefinition():Object { 
+			return mergeStyles(defaultStyles, ScrollBar.getStyleDefinition());
+		}
+
+		protected static const SCROLL_BAR_STYLES:Object = {
+											upArrowDisabledSkin: "upArrowDisabledSkin",
+											upArrowDownSkin:"upArrowDownSkin",
+											upArrowOverSkin:"upArrowOverSkin",
+											upArrowUpSkin:"upArrowUpSkin",
+											downArrowDisabledSkin:"downArrowDisabledSkin",
+											downArrowDownSkin:"downArrowDownSkin",
+											downArrowOverSkin:"downArrowOverSkin",
+											downArrowUpSkin:"downArrowUpSkin",
+											thumbDisabledSkin:"thumbDisabledSkin",
+											thumbDownSkin:"thumbDownSkin",
+											thumbOverSkin:"thumbOverSkin",
+											thumbUpSkin:"thumbUpSkin",
+											thumbIcon:"thumbIcon",
+											trackDisabledSkin:"trackDisabledSkin",
+											trackDownSkin:"trackDownSkin",
+											trackOverSkin:"trackOverSkin",
+											trackUpSkin:"trackUpSkin",
+											repeatDelay:"repeatDelay",
+											repeatInterval:"repeatInterval"
+											};
+
+		public function BaseScrollPane() {
+			super();
+        }
+        
+		[Inspectable(defaultValue=true, verbose=1)]
+
+		override public function set enabled(value:Boolean):void {
+			if (enabled == value) { 
+				return;
+			}
+			_verticalScrollBar.enabled = value;
+			_horizontalScrollBar.enabled = value;
+			super.enabled = value;
+		}
+
+
+		[Inspectable(defaultValue="auto",enumeration="on,off,auto")]
+		public function get horizontalScrollPolicy():String {
+			return _horizontalScrollPolicy;
+		}
+		public function set horizontalScrollPolicy(value:String):void {
+			_horizontalScrollPolicy = value;
+			invalidate(InvalidationType.SIZE);
+		}
+
+		[Inspectable(defaultValue="auto",enumeration="on,off,auto")]
+		public function get verticalScrollPolicy():String {
+			return _verticalScrollPolicy;
+		}
+		public function set verticalScrollPolicy(value:String):void {
+			_verticalScrollPolicy = value;
+			invalidate(InvalidationType.SIZE);
+		}
+		
+		[Inspectable(defaultValue=4)]
+		public function get horizontalLineScrollSize():Number {
+			return _horizontalScrollBar.lineScrollSize;
+		}
+		public function set horizontalLineScrollSize(value:Number):void {
+			_horizontalScrollBar.lineScrollSize = value;
+		}
+		
+
+		[Inspectable(defaultValue=4)]
+		public function get verticalLineScrollSize():Number {
+			return _verticalScrollBar.lineScrollSize;
+		}
+		public function set verticalLineScrollSize(value:Number):void {
+			_verticalScrollBar.lineScrollSize = value;
+		}
+
+		public function get horizontalScrollPosition():Number {
+			return _horizontalScrollBar.scrollPosition;
+		}
+		public function set horizontalScrollPosition(value:Number):void {
+			// We must force a redraw to ensure that the size is up to date.
+			drawNow();
+			
+			_horizontalScrollBar.scrollPosition = value;
+			setHorizontalScrollPosition(_horizontalScrollBar.scrollPosition,false);
+		}
+
+		public function get verticalScrollPosition():Number {
+			return _verticalScrollBar.scrollPosition;
+		}
+		public function set verticalScrollPosition(value:Number):void {
+			// We must force a redraw to ensure that the size is up to date.
+			drawNow();
+			
+			_verticalScrollBar.scrollPosition = value;
+			setVerticalScrollPosition(_verticalScrollBar.scrollPosition,false);
+		}
+
+		public function get maxHorizontalScrollPosition():Number {
+			drawNow();
+			return Math.max(0,contentWidth-availableWidth);
+		}
+		public function get maxVerticalScrollPosition():Number {
+			drawNow();
+			return Math.max(0,contentHeight-availableHeight);
+		}
+
+		public function get useBitmapScrolling():Boolean {
+			return _useBitmpScrolling;
+		}
+
+		public function set useBitmapScrolling(value:Boolean):void {
+			_useBitmpScrolling = value;
+			invalidate(InvalidationType.STATE);
+		}
+		
+		[Inspectable(defaultValue=0)]
+		public function get horizontalPageScrollSize():Number {
+			if (isNaN(availableWidth)) { drawNow(); }
+			return (_horizontalPageScrollSize == 0 && !isNaN(availableWidth)) ? availableWidth : _horizontalPageScrollSize;
+		}
+		public function set horizontalPageScrollSize(value:Number):void {
+			_horizontalPageScrollSize = value;
+			invalidate(InvalidationType.SIZE);	
+		}
+		
+		
+		[Inspectable(defaultValue=0)]
+		public function get verticalPageScrollSize():Number {
+			if (isNaN(availableHeight)) { drawNow(); }
+			return (_verticalPageScrollSize == 0 && !isNaN(availableHeight)) ? availableHeight : _verticalPageScrollSize;
+		}
+		public function set verticalPageScrollSize(value:Number):void {
+			_verticalPageScrollSize = value;
+			invalidate(InvalidationType.SIZE);	
+		}
+
+		public function get horizontalScrollBar():ScrollBar {
+			return _horizontalScrollBar;
+		}
+		public function get verticalScrollBar():ScrollBar {
+			return _verticalScrollBar;
+		}		
+
+		override protected function configUI():void {
+			super.configUI();
+
+			//contentScrollRect is not actually used by BaseScrollPane, only by subclasses.
+			contentScrollRect = new Rectangle(0,0,85,85);
+
+			// set up vertical scroll bar:
+			_verticalScrollBar = new ScrollBar();
+			_verticalScrollBar.addEventListener(ScrollEvent.SCROLL,handleScroll,false,0,true);
+			_verticalScrollBar.visible = false;
+			_verticalScrollBar.lineScrollSize = defaultLineScrollSize;
+			addChild(_verticalScrollBar);
+			copyStylesToChild(_verticalScrollBar,SCROLL_BAR_STYLES);
+
+			// set up horizontal scroll bar:
+			_horizontalScrollBar = new ScrollBar();
+			_horizontalScrollBar.direction = ScrollBarDirection.HORIZONTAL;
+			_horizontalScrollBar.addEventListener(ScrollEvent.SCROLL,handleScroll,false,0,true);
+			_horizontalScrollBar.visible = false;
+			_horizontalScrollBar.lineScrollSize = defaultLineScrollSize;
+			addChild(_horizontalScrollBar);
+			copyStylesToChild(_horizontalScrollBar,SCROLL_BAR_STYLES);
+			
+			// Create the disabled overlay
+			disabledOverlay = new Shape();
+			var g:Graphics = disabledOverlay.graphics;
+			g.beginFill(0xFFFFFF);
+			g.drawRect(0,0,width,height);
+			g.endFill();
+			
+			addEventListener(MouseEvent.MOUSE_WHEEL,handleWheel,false,0,true);
+		}
+
+		protected function setContentSize(width:Number,height:Number):void {
+			if ((contentWidth == width || useFixedHorizontalScrolling) && contentHeight == height) { return; }
+			
+			contentWidth = width;
+			contentHeight = height;
+			invalidate(InvalidationType.SIZE);
+		}
+
+		protected function handleScroll(event:ScrollEvent):void {
+			if (event.target == _verticalScrollBar) {
+				setVerticalScrollPosition(event.position);
+			} else {
+				setHorizontalScrollPosition(event.position);
+			}
+		}
+
+		protected function handleWheel(event:MouseEvent):void {
+			if (!enabled || !_verticalScrollBar.visible || contentHeight <= availableHeight) {
+				return;
+			}
+			_verticalScrollBar.scrollPosition -= event.delta * verticalLineScrollSize;
+			setVerticalScrollPosition(_verticalScrollBar.scrollPosition);
+			
+			dispatchEvent(new ScrollEvent(ScrollBarDirection.VERTICAL, event.delta, horizontalScrollPosition));
+		}
+
+		// These are meant to be overriden by subclasses:
+		protected function setHorizontalScrollPosition(scroll:Number,fireEvent:Boolean=false):void {}
+		protected function setVerticalScrollPosition(scroll:Number,fireEvent:Boolean=false):void {}
+
+		override protected function draw():void {
+			if (isInvalid(InvalidationType.STYLES)) {
+				setStyles();
+				drawBackground();
+				// drawLayout is expensive, so only do it if padding has changed:
+				if (contentPadding != getStyleValue("contentPadding")) {
+					invalidate(InvalidationType.SIZE,false);
+				}
+			}
+			if (isInvalid(InvalidationType.SIZE, InvalidationType.STATE)) {
+				drawLayout();
+			}
+			// Call drawNow() on nested components to get around problems with nested render events:
+			updateChildren();
+			super.draw();
+		}
+
+		protected function setStyles():void {
+			copyStylesToChild(_verticalScrollBar,SCROLL_BAR_STYLES);
+			copyStylesToChild(_horizontalScrollBar,SCROLL_BAR_STYLES);
+		}
+
+		protected function drawBackground():void {
+			var bg:DisplayObject = background;
+			
+			background = getDisplayObjectInstance(getStyleValue("skin"));
+			background.width = width;
+			background.height = height;
+			addChildAt(background,0);
+			
+			if (bg != null && bg != background) { removeChild(bg); }
+		}
+
+		protected function drawLayout():void {
+			calculateAvailableSize();
+			calculateContentWidth();
+			
+			background.width = width;
+			background.height = height;
+
+			if (vScrollBar) {
+				_verticalScrollBar.visible = true;
+				_verticalScrollBar.x = width - ScrollBar.WIDTH - contentPadding;
+				_verticalScrollBar.y = contentPadding;
+				_verticalScrollBar.height = availableHeight;
+			} else {
+				_verticalScrollBar.visible = false;
+			}
+			
+			_verticalScrollBar.setScrollProperties(availableHeight, 0, contentHeight - availableHeight, verticalPageScrollSize);
+			setVerticalScrollPosition(_verticalScrollBar.scrollPosition, false);
+
+			if (hScrollBar) {
+				_horizontalScrollBar.visible = true;
+				_horizontalScrollBar.x = contentPadding;
+				_horizontalScrollBar.y = height - ScrollBar.WIDTH - contentPadding;
+				_horizontalScrollBar.width = availableWidth;
+			} else {
+				_horizontalScrollBar.visible = false;
+			}
+			
+			_horizontalScrollBar.setScrollProperties(availableWidth, 0, (useFixedHorizontalScrolling) ? _maxHorizontalScrollPosition : contentWidth - availableWidth, horizontalPageScrollSize);
+			setHorizontalScrollPosition(_horizontalScrollBar.scrollPosition, false);
+			
+			drawDisabledOverlay();
+		}
+
+		protected function drawDisabledOverlay():void {
+			if (enabled) {
+				if (contains(disabledOverlay)) { removeChild(disabledOverlay); }
+			} else {
+				disabledOverlay.x = disabledOverlay.y = contentPadding;
+				disabledOverlay.width = availableWidth;
+				disabledOverlay.height = availableHeight;
+				disabledOverlay.alpha = getStyleValue("disabledAlpha") as Number;
+				addChild(disabledOverlay);
+			}
+		}
+
+		protected function calculateAvailableSize():void {
+			var scrollBarWidth:Number = ScrollBar.WIDTH;
+			var padding:Number = contentPadding = Number(getStyleValue("contentPadding"));
+			
+			// figure out which scrollbars we need
+			var availHeight:Number = height-2*padding - vOffset;
+			vScrollBar = (_verticalScrollPolicy == ScrollPolicy.ON) || (_verticalScrollPolicy == ScrollPolicy.AUTO && contentHeight > availHeight);
+			var availWidth:Number = width - (vScrollBar ? scrollBarWidth : 0) - 2 * padding;
+			var maxHScroll:Number = (useFixedHorizontalScrolling) ? _maxHorizontalScrollPosition : contentWidth - availWidth;
+			hScrollBar = (_horizontalScrollPolicy == ScrollPolicy.ON) || (_horizontalScrollPolicy == ScrollPolicy.AUTO && maxHScroll > 0);
+			if (hScrollBar) { availHeight -= scrollBarWidth; }
+			// catch the edge case of the horizontal scroll bar necessitating a vertical one:
+			if (hScrollBar && !vScrollBar && _verticalScrollPolicy == ScrollPolicy.AUTO && contentHeight > availHeight) {
+				vScrollBar = true;
+				availWidth -= scrollBarWidth;
+			}
+			availableHeight = availHeight + vOffset;
+			availableWidth = availWidth;
+		}
+
+		protected function calculateContentWidth():void {
+			// Meant to be overriden by subclasses
+		}
+
+		protected function updateChildren():void {
+			_verticalScrollBar.enabled = _horizontalScrollBar.enabled = enabled;
+			_verticalScrollBar.drawNow();
+			_horizontalScrollBar.drawNow();
+		}
+	}
+}
