@@ -18,10 +18,10 @@ package simplyFL.core {
             type = TextFieldType.DYNAMIC;
             selectable = false;
             defaultTextFormat = DefaultTextFormat;
-            setSize(88,22);
+            setSize(88, 22);
         }
 
-        public function move(x:Number,y:Number):void {
+        public function move(x:Number, y:Number):void {
             super.x = Math.round(x);
             super.y = Math.round(y);
         }
@@ -45,7 +45,10 @@ package simplyFL.core {
             defaultTextFormat = textFormat;
             setTextFormat(defaultTextFormat);
         }
-        public function get align():String { return defaultTextFormat.align;}
+
+        public function get align():String {
+            return defaultTextFormat.align;
+        }
 
         public function set font(value:String):void {
             var textFormat:TextFormat = defaultTextFormat;
@@ -53,7 +56,10 @@ package simplyFL.core {
             defaultTextFormat = textFormat;
             setTextFormat(defaultTextFormat);
         }
-        public function get font():String { return defaultTextFormat.font;}
+
+        public function get font():String {
+            return defaultTextFormat.font;
+        }
 
         public function set fontsize(value:int):void {
             var textFormat:TextFormat = defaultTextFormat;
@@ -61,16 +67,21 @@ package simplyFL.core {
             defaultTextFormat = textFormat;
             setTextFormat(defaultTextFormat);
         }
-        public function get fontsize():int { return int(defaultTextFormat.size);}
+
+        public function get fontsize():int {
+            return int(defaultTextFormat.size);
+        }
 
         /**
          * @example: labelField.setFormat({font:"sans", bold:true});
          */
         public function setFormat(formats:Object):void {
-            if (formats == null) {return;}
+            if (formats == null) {
+                return;
+            }
 
             var textFormat:TextFormat = defaultTextFormat;
-            setTextFormatbyObject(textFormat,formats);
+            setTextFormatbyObject(textFormat, formats);
             defaultTextFormat = textFormat;
             setTextFormat(defaultTextFormat);
         }

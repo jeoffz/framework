@@ -47,8 +47,9 @@ package simplyFL.containers {
         public function get title():String {
             return titleLabel.text;
         }
+
         public function set title(value:String):void {
-            if(value != titleLabel.text) {
+            if (value != titleLabel.text) {
                 titleLabel.text = value;
             }
         }
@@ -56,6 +57,7 @@ package simplyFL.containers {
         public function get content():DisplayObject {
             return _content;
         }
+
         public function set content(value:DisplayObject) {
 
         }
@@ -63,7 +65,7 @@ package simplyFL.containers {
         override protected function draw():void {
             if (isInvalid(InvalidationType.STYLES)) {
                 drawBackground();
-                invalidate(InvalidationType.SIZE,false); // invalidates size without calling draw next frame.
+                invalidate(InvalidationType.SIZE, false); // invalidates size without calling draw next frame.
             }
             if (isInvalid(InvalidationType.SIZE)) {
                 drawLayout();
@@ -75,7 +77,9 @@ package simplyFL.containers {
             var bg:DisplayObject = _background;
             _background = getDisplayObjectInstance(getStyle("upSkin"));
             addChildAt(_background, 0);
-            if (bg != null && bg != _background) { removeChild(bg); }
+            if (bg != null && bg != _background) {
+                removeChild(bg);
+            }
         }
 
         protected function drawLayout():void {
