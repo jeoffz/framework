@@ -16,7 +16,7 @@ package simplyFL.skins {
     import simplyFL.controls.RadioButton;
     import simplyFL.controls.ScrollBar;
     import simplyFL.controls.TextInput;
-    import simplyFL.core.LabelField;
+    import simplyFL.core.Label;
     import simplyFL.managers.StyleManager;
 
     public class As3ComponentSkinSetter {
@@ -30,7 +30,7 @@ package simplyFL.skins {
         {
             var textFormat:TextFormat = new TextFormat("微软雅黑", 12, 0x000000, false, false, false, "", "", TextFormatAlign.LEFT, 0, 0, 0, 0);
             var disabledTextFormat:TextFormat = new TextFormat("微软雅黑", 12, 0x999999, false, false, false, "", "", TextFormatAlign.LEFT, 0, 0, 0, 0);
-            LabelField.DefaultTextFormat = textFormat;
+            Label.DefaultTextFormat = textFormat;
 
             var loader:Loader = new Loader();
             loader.contentLoaderInfo.addEventListener(Event.COMPLETE,function onComplete(event:Event):void {
@@ -49,7 +49,7 @@ package simplyFL.skins {
                     selectedDisabledSkin:"As3Component_BaseButton_selectedDisabledSkin"
                 };
                 StyleManager.registerStyles(BaseButton,"As3Component_BaseButton",styleObj);
-                StyleManager.setComponentStyles(BaseButton,"As3Component_BaseButton");
+                StyleManager.setComponentUiStyle(BaseButton,"As3Component_BaseButton");
 
                 // set Button Skins
                 styleObj = StyleManager.mergeStyles(styleObj, {
@@ -60,7 +60,7 @@ package simplyFL.skins {
                         }
                 );
                 StyleManager.registerStyles(Button,"As3Component_Button",styleObj);
-                StyleManager.setComponentStyles(Button,"As3Component_Button");
+                StyleManager.setComponentUiStyle(Button,"As3Component_Button");
 
                 // set CheckBox Skins
                 styleObj = {
@@ -79,7 +79,7 @@ package simplyFL.skins {
                     disabledTextFormat: disabledTextFormat
                 };
                 StyleManager.registerStyles(CheckBox,"As3Component_CheckBox",styleObj);
-                StyleManager.setComponentStyles(CheckBox,"As3Component_CheckBox");
+                StyleManager.setComponentUiStyle(CheckBox,"As3Component_CheckBox");
 
                 // set RadioButton Skins
                 styleObj = {
@@ -98,7 +98,7 @@ package simplyFL.skins {
                     disabledTextFormat: disabledTextFormat
                 };
                 StyleManager.registerStyles(RadioButton,"As3Component_RadioButton",styleObj);
-                StyleManager.setComponentStyles(RadioButton,"As3Component_RadioButton");
+                StyleManager.setComponentUiStyle(RadioButton,"As3Component_RadioButton");
 
                 // set TextInput Skins
                 styleObj = {
@@ -112,7 +112,7 @@ package simplyFL.skins {
                     disabledTextFormat: disabledTextFormat
                 };
                 StyleManager.registerStyles(TextInput,"As3Component_TextInput",styleObj);
-                StyleManager.setComponentStyles(TextInput,"As3Component_TextInput");
+                StyleManager.setComponentUiStyle(TextInput,"As3Component_TextInput");
 
                 // set ScrollBar Skins
                 styleObj = {
@@ -136,7 +136,7 @@ package simplyFL.skins {
                     repeatDelay:500,repeatInterval:35
                 };
                 StyleManager.registerStyles(ScrollBar,"As3Component_ScrollBar",styleObj);
-                StyleManager.setComponentStyles(ScrollBar,"As3Component_ScrollBar");
+                StyleManager.setComponentUiStyle(ScrollBar,"As3Component_ScrollBar");
 
                 callBack();
             });

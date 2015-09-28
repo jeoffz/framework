@@ -11,7 +11,7 @@ package simplyFL.controls {
     import flash.text.TextLineMetrics;
 
     import simplyFL.core.InvalidationType;
-    import simplyFL.core.LabelField;
+    import simplyFL.core.Label;
     import simplyFL.core.UIComponent;
 
     //--------------------------------------
@@ -42,7 +42,7 @@ package simplyFL.controls {
     //--------------------------------------
 	public class TextInput extends UIComponent {
 
-		public var labelField:LabelField;
+		public var labelField:Label;
 
         protected var _mouseState:String;
 
@@ -52,11 +52,11 @@ package simplyFL.controls {
 
 		protected var _background:DisplayObject;
 
-		public function TextInput() { super(); }
+		public function TextInput(uiStyleName:String = null) { super(uiStyleName); }
 
         override protected function configUI():void {
             super.configUI();
-            labelField = new LabelField();
+            labelField = new Label();
             addChild(labelField);
             updateTextFieldType();
 
@@ -69,7 +69,6 @@ package simplyFL.controls {
             setMouseState("up");
         }
 
-		[Inspectable(defaultValue="")]
 		public function get text():String {
 			return labelField.text;
 		}
@@ -78,7 +77,6 @@ package simplyFL.controls {
 			labelField.text = value;
 		}
 
-		[Inspectable(defaultValue=true)]
 		public function get enabled():Boolean {
 			return _enabled;
 		}
@@ -94,7 +92,6 @@ package simplyFL.controls {
             }
 		}
 
-		[Inspectable(defaultValue=true)]
 		public function get editable():Boolean {
 			return _editable;
 		}
@@ -108,7 +105,6 @@ package simplyFL.controls {
 			return labelField.length;
 		}
 
-		[Inspectable(defaultValue=0)]
 		public function get maxChars():int {
 			return labelField.maxChars;
 		}
@@ -117,7 +113,6 @@ package simplyFL.controls {
 			labelField.maxChars = value;
 		}
 		
-		[Inspectable(defaultValue=false)]
 		public function get displayAsPassword():Boolean {
 			return labelField.displayAsPassword;
 		}
@@ -125,7 +120,6 @@ package simplyFL.controls {
 			labelField.displayAsPassword = value;
 		}
 		
-		[Inspectable(defaultValue="")]
 		public function get restrict():String {
 			return labelField.restrict;
 		}

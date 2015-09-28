@@ -43,8 +43,8 @@ package simplyFL.controls {
 
 	public class CheckBox extends Button {
 
-		public function CheckBox() { 
-			super();
+		public function CheckBox(uiStyleName:String = null) {
+			super(uiStyleName);
 		}
 
         override protected function configUI():void {

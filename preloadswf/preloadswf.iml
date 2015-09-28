@@ -4,11 +4,25 @@
     <configurations>
       <configuration name="PreloadSwf" pure-as="true" main-class="PreloadSwf" output-file="PreloadSwf.swf" output-folder="$MODULE_DIR$/../out/production/preloadswf">
         <dependencies target-player="16.0">
+          <entries>
+            <entry library-id="8f6f9f5d-1f94-4bda-9f32-172e9a60de8b">
+              <dependency linkage="Merged" />
+            </entry>
+          </entries>
           <sdk name="Flex SDK" />
         </dependencies>
         <compiler-options>
           <option name="additionalOptions" value="-advanced-telemetry" />
         </compiler-options>
+        <packaging-air-desktop />
+        <packaging-android />
+        <packaging-ios />
+      </configuration>
+      <configuration name="PreloadLocalConnection" pure-as="true" main-class="PreloadLocalConnection" output-file="PreloadLocalConnection.swf" output-folder="$MODULE_DIR$/../out/production/preloadswf">
+        <dependencies target-player="16.0">
+          <sdk name="Flex SDK" />
+        </dependencies>
+        <compiler-options />
         <packaging-air-desktop />
         <packaging-android />
         <packaging-ios />
@@ -23,5 +37,15 @@
     </content>
     <orderEntry type="jdk" jdkName="Flex SDK" jdkType="Flex SDK Type (new)" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module-library" exported="">
+      <library type="flex">
+        <properties id="8f6f9f5d-1f94-4bda-9f32-172e9a60de8b" />
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../jas3lib/swc/MonsterDebugger.swc!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>

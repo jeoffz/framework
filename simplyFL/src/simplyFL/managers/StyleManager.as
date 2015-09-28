@@ -43,12 +43,6 @@ package simplyFL.managers {
 				inst.classToInstancesDict[classDef] = new Dictionary(true);
 			}
 			inst.classToInstancesDict[classDef][instance] = true;
-
-			var uiStyle:String = inst.classToUiStylesDict[classDef];
-            if(uiStyle == null) {
-                throw new Error("classToUiStylesDict["+classDef + "] == null.");
-            }
-			instance.uiStyle = uiStyle;
 		}
 
         public static function registerStyles(classDef:Class,uiStyle:String,styleObj:Object):void {
@@ -70,7 +64,7 @@ package simplyFL.managers {
             return null;
 		}
 
-        public static function setComponentStyles(classDef:Class, uiStyle:String):void {
+        public static function setComponentUiStyle(classDef:Class, uiStyle:String):void {
             var inst:StyleManager = getInstance();
             if(uiStyle == inst.classToUiStylesDict[classDef]) {return;}
             inst.classToUiStylesDict[classDef] = uiStyle;
@@ -79,6 +73,12 @@ package simplyFL.managers {
                 for (var instance:Object in instancesDict)
                     (instance as UIComponent).uiStyle = uiStyle;
             }
+        }
+
+        public static function getComponentUiStyle(classOrInst:Object):String {
+            var inst:StyleManager = getInstance();
+            var classDef:Class = getClassDef(classOrInst);
+            return inst.classToUiStylesDict[classDef];
         }
 
         public static function mergeStyles(...list:Array):Object {

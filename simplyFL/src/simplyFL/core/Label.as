@@ -8,11 +8,11 @@ package simplyFL.core {
     import flash.text.TextFormat;
     import flash.text.TextFormatAlign;
 
-    public class LabelField extends TextField {
+    public class Label extends TextField {
 
         public static var DefaultTextFormat:TextFormat = new TextFormat("_sans", 12, 0x000000, false, false, false, "", "", TextFormatAlign.LEFT, 0, 0, 0, 0);
 
-        public function LabelField() {
+        public function Label() {
             super();
 
             type = TextFieldType.DYNAMIC;
@@ -24,6 +24,14 @@ package simplyFL.core {
         public function move(x:Number,y:Number):void {
             super.x = Math.round(x);
             super.y = Math.round(y);
+        }
+
+        override public function set x(value:Number):void {
+            super.x = Math.round(value);
+        }
+
+        override public function set y(value:Number):void {
+            super.y = Math.round(value);
         }
 
         public function setSize(width:Number, height:Number):void {

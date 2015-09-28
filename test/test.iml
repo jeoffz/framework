@@ -8,6 +8,9 @@
             <entry module-name="jas3lib" build-configuration-name="jas3lib">
               <dependency linkage="Merged" />
             </entry>
+            <entry module-name="simplyFL" build-configuration-name="simplyFL">
+              <dependency linkage="Merged" />
+            </entry>
           </entries>
           <sdk name="Flex SDK" />
         </dependencies>
@@ -43,6 +46,20 @@
         <packaging-android />
         <packaging-ios />
       </configuration>
+      <configuration name="simplyFLTest" pure-as="true" main-class="SimplyFLTest" output-file="simplyFLTest.swf" output-folder="$MODULE_DIR$/../out/production/test">
+        <dependencies target-player="16.0">
+          <entries>
+            <entry module-name="simplyFL" build-configuration-name="simplyFL">
+              <dependency linkage="Merged" />
+            </entry>
+          </entries>
+          <sdk name="Flex SDK" />
+        </dependencies>
+        <compiler-options />
+        <packaging-air-desktop />
+        <packaging-android />
+        <packaging-ios />
+      </configuration>
     </configurations>
     <compiler-options />
   </component>
@@ -54,5 +71,6 @@
     <orderEntry type="jdk" jdkName="Flex SDK" jdkType="Flex SDK Type (new)" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="jas3lib" exported="" />
+    <orderEntry type="module" module-name="simplyFL" exported="" />
   </component>
 </module>

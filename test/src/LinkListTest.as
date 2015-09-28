@@ -24,9 +24,9 @@ package {
             trace(getTimer()-time);
 
             var head:LinkList = new LinkList();
-            var p:LinkList = head;
+            var p:LinkList = head,q:LinkList;
             for (var j:int = 0; j < 100000; j++) {
-                var q:LinkList = new LinkList();
+                q = new LinkList();
                 q.value = j;
                 p.next = q;
                 p = q;
@@ -36,7 +36,7 @@ package {
             time = getTimer();
             p = head;
             while(p.next) {
-                var q:LinkList = p.next;
+                q = p.next;
 //                trace(q.value);
                 p.next = q.next;
             }

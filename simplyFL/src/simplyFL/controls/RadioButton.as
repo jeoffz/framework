@@ -50,8 +50,8 @@ package simplyFL.controls {
 
 		protected var defaultGroupName:String = "RadioButtonGroup";
 
-		public function RadioButton() {
-			super();
+		public function RadioButton(uiStyleName:String = null) {
+			super(uiStyleName);
 			groupName = defaultGroupName;
 		}
 
@@ -85,7 +85,6 @@ package simplyFL.controls {
             return;
         }
 
-        [Inspectable(defaultValue=false)]
 		override public function get selected():Boolean {
 			return super.selected;
 		}
@@ -100,7 +99,6 @@ package simplyFL.controls {
             selected = !selected;
         }
 
-		[Inspectable(defaultValue="RadioButtonGroup")]
 		public function get groupName():String {
 			return (_group == null) ? null : _group.name;
 		}
@@ -126,7 +124,6 @@ package simplyFL.controls {
 			groupName = name.name;
 		}
 		
-		[Inspectable(type="String")]
 		public function get data():Object {
 			return _data;
 		}

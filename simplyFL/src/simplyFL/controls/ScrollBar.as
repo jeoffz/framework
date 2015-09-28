@@ -109,8 +109,8 @@ package simplyFL.controls {
             repeatInterval: "repeatInterval"
         };
 
-		public function ScrollBar() {
-			super();
+		public function ScrollBar(uiStyleName:String = null) {
+			super(uiStyleName);
 			setChildStyles();
 		}
 
@@ -208,17 +208,15 @@ package simplyFL.controls {
 		public function set direction(value:String):void {
 			if (_direction == value) { return; }
 			_direction = value;
-			if (isLivePreview) { return; } // Rotation and scaling happens automatically in LivePreview.
-			//
-			setScaleY(1);			
+			scaleY = 1;
 			
 			var horizontal:Boolean = _direction == ScrollBarDirection.HORIZONTAL;
             if (horizontal && rotation == 0) {
                 rotation = -90;
-                setScaleX(-1);
+                scaleX = -1;
             } else if (!horizontal && rotation == -90 ) {
                 rotation = 0;
-                setScaleX(1);
+				scaleX = 1;
             }
 			invalidate(InvalidationType.SIZE);
 		}

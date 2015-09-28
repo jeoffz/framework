@@ -5,7 +5,7 @@ package simplyFL.controls {
 	import flash.text.TextFormat;
 
 	import simplyFL.core.InvalidationType;
-	import simplyFL.core.LabelField;
+	import simplyFL.core.Label;
 	import simplyFL.defines.ButtonLabelPlacement;
 
     //--------------------------------------
@@ -57,7 +57,7 @@ package simplyFL.controls {
 
 	public class Button extends BaseButton {
 
-		public var labelField:LabelField;
+		public var labelField:Label;
 
 		protected var _labelPlacement:String = ButtonLabelPlacement.RIGHT;		
 
@@ -65,18 +65,17 @@ package simplyFL.controls {
 
 		protected var _label:String = "Label";
 
-		public function Button() {
-			super();
+		public function Button(uiStyleName:String = null) {
+			super(uiStyleName);
 		}
 
 		override protected function configUI():void {
 			super.configUI();
 
-			labelField = new LabelField();
+			labelField = new Label();
 			addChild(labelField);
 		}
 		
-		[Inspectable(defaultValue="Label")]
 		public function get label():String {
 			return _label;
 		}
@@ -87,7 +86,6 @@ package simplyFL.controls {
 			invalidate(InvalidationType.STYLES);
 		}	
 		
-		[Inspectable(enumeration="left,right,top,bottom", defaultValue="right")]
 		public function get labelPlacement():String {
 			return _labelPlacement;
 		}

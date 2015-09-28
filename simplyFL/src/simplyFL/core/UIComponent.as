@@ -9,7 +9,6 @@ package simplyFL.core {
     import flash.text.TextFormat;
     import flash.utils.Dictionary;
     import flash.utils.getDefinitionByName;
-    import flash.utils.getQualifiedClassName;
 
     import simplyFL.managers.StyleManager;
 
@@ -25,65 +24,40 @@ package simplyFL.core {
     //--------------------------------------
 	public class UIComponent extends Sprite {
 
-		public static var inCallLaterPhase:Boolean = false;
-
-		protected var isLivePreview:Boolean = false;
+        protected var invalidHash:Object;
+		protected var inCallLater:Boolean;
 
 		protected var instanceStyles:Object;
-
 		protected var sharedStyles:Object; // Holds a reference to the class-level styles.
 
-		protected var _uiStyle:String;
-
-        protected var callLaterMethods:Dictionary;
-
-		protected var invalidHash:Object;
-
+        protected var _uiStyle:String;
 		protected var _width:Number;
-
 		protected var _height:Number;
 
-		protected var startWidth:Number;
-
-		protected var startHeight:Number;
-
-		public function UIComponent() {
+		public function UIComponent(uiStyleName:String = null) {
 			super();
 
             tabEnabled = false;
             tabChildren = false;
 
+            invalidHash = {};
+			inCallLater = false;
 			instanceStyles = {};
 			sharedStyles = {};
-			invalidHash = {};
-			callLaterMethods = new Dictionary();
 
 			StyleManager.registerInstance(this);
+            if(uiStyleName == null) {
+                uiStyleName = StyleManager.getComponentUiStyle(this);
+            }
+            uiStyle = uiStyleName;
 
 			configUI();
 			invalidate(InvalidationType.ALL);
 		}
 
 		protected function configUI():void {
-			isLivePreview = checkLivePreview();
-			var r:Number = rotation;
-			rotation = 0;
-			var w:Number = super.width;
-			var h:Number = super.height;
-			super.scaleX = super.scaleY = 1;
-            if(w==0 || h==0) {
-                w = getStyle("width") as Number;
-                h = getStyle("height") as Number;
-            }
-			setSize(w,h);
-			move(super.x,super.y);
-			rotation = r;
-			startWidth = w;
-			startHeight = h;
-			if (numChildren > 0) { removeChildAt(0); }
 		}
 
-        [Inspectable(defaultValue="default")]
 		public function set uiStyle(value:String):void {
 			if(value == _uiStyle) {return;}
 			_uiStyle = value;
@@ -92,11 +66,13 @@ package simplyFL.core {
                 throw new Error(this + ".uiStyle " + uiStyle + "doesn't exist.");
             }
             sharedStyles = styleObj;
+            var w:Number = getStyle("width") as Number;
+            var h:Number = getStyle("height") as Number;
+            setSize(w,h);
 			invalidate(InvalidationType.STYLES);
 		}
 		public function get uiStyle():String { return _uiStyle;}
 
-		/** clearΪtrueʱ�����instanceStyles��Ĭ��Ϊfalse */
 		public function setUiStyle(value:String,clear:Boolean=false):void {
             uiStyle = value;
             if (clear) {
@@ -167,38 +143,6 @@ package simplyFL.core {
 			super.y = Math.round(value);
 		}
 
-		override public function get scaleX():Number {
-			return width / startWidth;
-		}
-
-		override public function set scaleX(value:Number):void {
-			setSize(startWidth*value, height);
-		}
-
-		override public function get scaleY():Number {
-			return height / startHeight;
-		}
-
-		override public function set scaleY(value:Number):void {
-			setSize(width, startHeight*value);
-		}
-
-		protected function getScaleY():Number {
-			return super.scaleY;
-		}
-
-		protected function setScaleY(value:Number):void {
-			super.scaleY = value;
-		}
-
-		protected function getScaleX():Number {
-			return super.scaleX;
-		}
-
-		protected function setScaleX(value:Number):void {
-			super.scaleX = value;
-		}
-
 		public function validateNow():void {
 			invalidate(InvalidationType.ALL,false);
 			draw();
@@ -206,7 +150,7 @@ package simplyFL.core {
 
 		public function invalidate(property:String=InvalidationType.ALL,callLater:Boolean=true):void {
 			invalidHash[property] = true;
-			if (callLater) { this.callLater(draw); }
+			if (callLater) { this.callLater(); }
 		}
 
 		protected function validate():void {
@@ -233,10 +177,10 @@ package simplyFL.core {
 			validate();
 		}
 
-		protected function callLater(fn:Function):void {
-			if (inCallLaterPhase) { return; }
+		protected function callLater():void {
+			if (inCallLater) { return; }
+			inCallLater = true;
 			
-			callLaterMethods[fn] = true;
 			if (stage != null) {
 				try {
 					stage.addEventListener(Event.RENDER,callLaterDispatcher,false,0,true);
@@ -261,8 +205,8 @@ package simplyFL.core {
 				}
                 return;
 			} else {
-				event.target.removeEventListener(Event.RENDER,callLaterDispatcher);
-				event.target.removeEventListener(Event.ENTER_FRAME,callLaterDispatcher);
+				stage.removeEventListener(Event.RENDER,callLaterDispatcher);
+				removeEventListener(Event.ENTER_FRAME,callLaterDispatcher);
 				try {
 					if (stage == null) {
 						// received render, but the stage is not available, so we will listen for addedToStage again:
@@ -273,25 +217,11 @@ package simplyFL.core {
 				}
 			}
 
-			inCallLaterPhase = true;
-			
-			var methods:Dictionary = callLaterMethods;
-			for (var method:Object in methods) {
-				(method as Function).call();
-				delete(methods[method]);
-			}
-			inCallLaterPhase = false;
+			draw();
+			inCallLater = false;
 		}
 
-		protected function checkLivePreview():Boolean {
-			if (parent == null) { return false; }
-			var className:String;
-			try {
-				className = getQualifiedClassName(parent);
-			} catch (e:Error) {}
-			return (className == "fl.livepreview::LivePreviewParent");
-		}
-
+        private static var bitmapDataCache:Dictionary = new Dictionary();
 		protected function getDisplayObjectInstance(skin:Object):DisplayObject {
 			var obj:Object = null;
 			var classDef:Object = null;
@@ -309,6 +239,10 @@ package simplyFL.core {
 				return new Bitmap(skin as BitmapData);
 			}
 
+            var bitmapData:BitmapData = bitmapDataCache[skin.toString()];
+            if(bitmapData) {
+                return new Bitmap(bitmapData);
+            }
 			try {
 				classDef = getDefinitionByName(skin.toString());
 			} catch(e:Error) {
@@ -320,10 +254,12 @@ package simplyFL.core {
 			}
 
 			if (classDef == null) {
-				return null;
+				throw new Error(skin + " class is null.");
+                return null;
 			}
 			obj = new classDef();
 			if (obj is BitmapData) {
+                bitmapDataCache[skin.toString()] = obj;
 				return new Bitmap(obj as BitmapData);
 			}
 			return obj as DisplayObject;

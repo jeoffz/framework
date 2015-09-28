@@ -7,8 +7,15 @@ package {
     import jas3lib.debug.StatsDisplay;
 
     public class Test extends Sprite {
+
         public function Test() {
             super();
+
+            if(name != "root1") {
+                trace("fail");
+            } else {
+               trace("success")
+            }
 
             addChild(new StatsDisplay());
         }

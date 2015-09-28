@@ -62,8 +62,8 @@ package simplyFL.controls {
 
         private var unlockedMouseState:String;
 
-		public function BaseButton() {
-			super();
+		public function BaseButton(uiStyleName:String = null) {
+			super(uiStyleName);
 
 			buttonMode = true;
 			mouseChildren = false;
@@ -73,7 +73,6 @@ package simplyFL.controls {
             setMouseState("up");
 		}
 
-		[Inspectable(defaultValue=false)]
 		public function get toggle():Boolean { return _toggle; }
 		public function set toggle(value:Boolean):void {
 			if(_toggle == value) { return; }
@@ -89,7 +88,6 @@ package simplyFL.controls {
 			dispatchEvent(new Event(Event.CHANGE, true));
 		}
 
-		[Inspectable(defaultValue=true)]
 		public function get selected():Boolean {
 			return (_toggle) ? _selected : false;
 		}
@@ -101,7 +99,6 @@ package simplyFL.controls {
 			}
 		}
 
-		[Inspectable(defaultValue=true)]
 		public function get enabled():Boolean { return _enabled; }
 		public function set enabled(value:Boolean):void {
 			if (_enabled == value) { return; }
