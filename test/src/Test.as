@@ -11,10 +11,10 @@ package {
         public function Test() {
             super();
 
-            if(name != "root1") {
+            if (name != "root1") {
                 trace("fail");
             } else {
-               trace("success")
+                trace("success")
             }
 
             addChild(new StatsDisplay());

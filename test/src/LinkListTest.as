@@ -17,14 +17,14 @@ package {
 
             var time:uint = getTimer();
             var len:int = arr.length;
-            while(arr.length) {
-                arr.splice(0,1);
+            while (arr.length) {
+                arr.splice(0, 1);
                 len--;
             }
-            trace(getTimer()-time);
+            trace(getTimer() - time);
 
             var head:LinkList = new LinkList();
-            var p:LinkList = head,q:LinkList;
+            var p:LinkList = head, q:LinkList;
             for (var j:int = 0; j < 100000; j++) {
                 q = new LinkList();
                 q.value = j;
@@ -35,13 +35,13 @@ package {
 //            System.gc();
             time = getTimer();
             p = head;
-            while(p.next) {
+            while (p.next) {
                 q = p.next;
 //                trace(q.value);
                 p.next = q.next;
             }
             System.gc();
-            trace(getTimer()-time);
+            trace(getTimer() - time);
         }
     }
 }

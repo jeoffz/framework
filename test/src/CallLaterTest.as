@@ -25,10 +25,10 @@ package {
 //            CallLater.nextframeCall(hehe);
         }
 
-        private function heihei(str:String,value:int):void {
-            trace("heihei",str,value);
+        private function heihei(str:String, value:int):void {
+            trace("heihei", str, value);
             trace(getTimer());
-            CallLater.delayCall(heihei,["2",2],2000,true);
+            CallLater.delayCall(heihei, ["2", 2], 2000, true);
 //            CallLater.delayCall(heihei,["4",4],5000);
 //            CallLater.delayCall(heihei,["3",3],4000);
         }
