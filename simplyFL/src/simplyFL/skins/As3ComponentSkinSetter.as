@@ -10,6 +10,8 @@ package simplyFL.skins {
     import flash.text.TextFormatAlign;
     import flash.utils.ByteArray;
 
+    import simplyFL.containers.SimplePanel;
+
     import simplyFL.controls.BaseButton;
     import simplyFL.controls.Button;
     import simplyFL.controls.CheckBox;
@@ -137,6 +139,15 @@ package simplyFL.skins {
                 };
                 StyleManager.registerStyles(ScrollBar, "As3Component_ScrollBar", styleObj);
                 StyleManager.setComponentUiStyle(ScrollBar, "As3Component_ScrollBar");
+
+                // set SimplePanel Skins
+                styleObj = {
+                    width: 400, height: 300,
+                    upSkin: "As3Component_SimplePanel_upSkin",
+                    marginLeft: 0, marginRight: 0, marginTop: 24, marginBottom: 0
+                };
+                StyleManager.registerStyles(SimplePanel, "As3Component_SimplePanel", styleObj);
+                StyleManager.setComponentUiStyle(SimplePanel, "As3Component_SimplePanel");
 
                 callBack();
             });

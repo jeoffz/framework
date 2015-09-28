@@ -2,11 +2,13 @@
  * Created by zhujiahe on 2015/9/28.
  */
 package {
+    import flash.display.Shape;
     import flash.display.Sprite;
     import flash.display.StageAlign;
     import flash.display.StageScaleMode;
     import flash.events.Event;
 
+    import simplyFL.containers.SimplePanel;
     import simplyFL.controls.BaseButton;
     import simplyFL.controls.Button;
     import simplyFL.controls.CheckBox;
@@ -16,6 +18,7 @@ package {
     import simplyFL.defines.ScrollBarDirection;
     import simplyFL.skins.As3ComponentSkinSetter;
 
+    [SWF(width=800, height=600)]
     public class SimplyFLTest extends Sprite {
         public function SimplyFLTest() {
             As3ComponentSkinSetter.setupSkin(function onLoaded():void {
@@ -44,7 +47,7 @@ package {
 
             var btn2:Button = new Button();
             btn2.move(10, 40);
-            btn2.label = "按钮";
+            btn2.label = "确认";
             addChild(btn2);
 
             var btn3:Button = new Button();
@@ -81,6 +84,17 @@ package {
             scrollBar.maxScrollPosition = 30;
             scrollBar.pageSize = 30;
             addChild(scrollBar);
+
+            var simplePanel:SimplePanel = new SimplePanel();
+            simplePanel.move(220, 10);
+            simplePanel.setSize(100,300);
+            simplePanel.title = "SimplePanelTest.as";
+            var shape:Shape = new Shape();
+            shape.graphics.beginFill(0x7f7f7f);
+            shape.graphics.drawRect(0,0,400,400);
+            shape.graphics.endFill();
+            simplePanel.content = shape;
+            addChild(simplePanel);
         }
     }
 }
