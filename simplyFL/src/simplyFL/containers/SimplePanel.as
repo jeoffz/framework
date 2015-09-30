@@ -25,6 +25,7 @@ package simplyFL.containers {
     //--------------------------------------
     //  Class description
     //--------------------------------------
+
     public class SimplePanel extends UIComponent {
 
         public var titleLabel:Label;
@@ -35,8 +36,8 @@ package simplyFL.containers {
 
         protected var _content:DisplayObject;
 
-        public function SimplePanel(uiStyleName:String = null) {
-            super(uiStyleName);
+        public function SimplePanel(uiStyleObj:Object = null) {
+            super(uiStyleObj);
         }
 
         override protected function configUI():void {

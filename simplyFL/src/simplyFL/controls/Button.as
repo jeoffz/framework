@@ -48,9 +48,6 @@ package simplyFL.controls {
     [Style(name="repeatDelay", type="Number", format="Time")]
     [Style(name="repeatInterval", type="Number", format="Time")]
 
-    [Style(name="width", type="Number")]
-    [Style(name="height", type="Number")]
-
     //--------------------------------------
     //  Class description
     //--------------------------------------
@@ -65,8 +62,8 @@ package simplyFL.controls {
 
         protected var _label:String = "Label";
 
-        public function Button(uiStyleName:String = null) {
-            super(uiStyleName);
+        public function Button(uiStyleObj:Object = null) {
+            super(uiStyleObj);
         }
 
         override protected function configUI():void {

@@ -34,17 +34,14 @@ package simplyFL.controls {
     [Style(name="textFormat", type="flash.text.TextFormat")]
     [Style(name="disabledTextFormat", type="flash.text.TextFormat")]
 
-    [Style(name="width", type="Number")]
-    [Style(name="height", type="Number")]
-
     //--------------------------------------
     //  Class description
     //--------------------------------------
 
     public class CheckBox extends Button {
 
-        public function CheckBox(uiStyleName:String = null) {
-            super(uiStyleName);
+        public function CheckBox(uiStyleObj:Object = null) {
+            super(uiStyleObj);
         }
 
         override protected function configUI():void {

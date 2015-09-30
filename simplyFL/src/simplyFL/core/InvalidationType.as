@@ -11,5 +11,8 @@ package simplyFL.core {
 
         public static const STATE:String = "state";
 
+        public static const DATA:String = "data";
+
+        public static const TEMP:String = "temp";
     }
 }

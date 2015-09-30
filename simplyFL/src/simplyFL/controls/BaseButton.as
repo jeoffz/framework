@@ -34,9 +34,6 @@ package simplyFL.controls {
     [Style(name="repeatDelay", type="Number", format="Time")]
     [Style(name="repeatInterval", type="Number", format="Time")]
 
-    [Style(name="width", type="Number")]
-    [Style(name="height", type="Number")]
-
     //--------------------------------------
     //  Class description
     //--------------------------------------
@@ -61,8 +58,8 @@ package simplyFL.controls {
 
         private var unlockedMouseState:String;
 
-        public function BaseButton(uiStyleName:String = null) {
-            super(uiStyleName);
+        public function BaseButton(uiStyleObj:Object = null) {
+            super(uiStyleObj);
 
             buttonMode = true;
             mouseChildren = false;

@@ -27,15 +27,14 @@ package simplyFL.controls {
 
     [Style(name="upSkin", type="Class")]
     [Style(name="disabledSkin", type="Class")]
-    [Style(name="overSkin", type="Class")]
 
-    [Style(name="textPadding", type="Number", format="Length")]
+    [Style(name="textPadding", type="Number")]
     [Style(name="embedFonts", type="Boolean")]
     [Style(name="textFormat", type="flash.text.TextFormat")]
     [Style(name="disabledTextFormat", type="flash.text.TextFormat")]
 
-    [Style(name="width", type="Number")]
-    [Style(name="height", type="Number")]
+    [Style(name="focusRectPadding", type="Number")]
+    [Style(name="focusRectSkin", type="Class")]
 
     //--------------------------------------
     //  Class description
@@ -44,16 +43,14 @@ package simplyFL.controls {
 
         public var labelField:Label;
 
-        protected var _mouseState:String;
-
         protected var _editable:Boolean = true;
 
         protected var _enabled:Boolean = true;
 
         protected var _background:DisplayObject;
 
-        public function TextInput(uiStyleName:String = null) {
-            super(uiStyleName);
+        public function TextInput(uiStyleObj:Object = null) {
+            super(uiStyleObj);
         }
 
         override protected function configUI():void {
@@ -66,9 +63,6 @@ package simplyFL.controls {
             labelField.addEventListener(Event.CHANGE, handleChange, false, 0, true);
             addEventListener(FocusEvent.FOCUS_IN, focusInHandler, false, 0, true);
             addEventListener(FocusEvent.FOCUS_OUT, focusOutHandler, false, 0, true);
-            addEventListener(MouseEvent.ROLL_OVER, mouseEventHandler, false, 0, true);
-            addEventListener(MouseEvent.ROLL_OUT, mouseEventHandler, false, 0, true);
-            setMouseState("up");
         }
 
         public function get text():String {
@@ -88,12 +82,13 @@ package simplyFL.controls {
                 return;
             }
             _enabled = value;
-            invalidate(InvalidationType.STATE);
             updateTextFieldType();
             mouseEnabled = value;
+            mouseChildren = value;
             if (value == false && stage && stage.focus == labelField) {
                 stage.focus = stage;
             }
+            invalidate(InvalidationType.STATE);
         }
 
         public function get editable():Boolean {
@@ -130,9 +125,7 @@ package simplyFL.controls {
         }
 
         public function set restrict(value:String):void {
-            if (value == "") {
-                value = null;
-            }
+            if (value == "") value = null;
             labelField.restrict = value;
         }
 
@@ -165,10 +158,12 @@ package simplyFL.controls {
         }
 
         public function get textHeight():Number {
+            drawNow();
             return labelField.textHeight;
         }
 
         public function get textWidth():Number {
+            drawNow();
             return labelField.textWidth;
         }
 
@@ -187,7 +182,6 @@ package simplyFL.controls {
         protected function updateTextFieldType():void {
             labelField.type = (enabled && editable) ? TextFieldType.INPUT : TextFieldType.DYNAMIC;
             labelField.selectable = enabled;
-            labelField.mouseEnabled = enabled;
         }
 
         protected function handleChange(event:Event):void {
@@ -207,22 +201,6 @@ package simplyFL.controls {
             }
         }
 
-        public function setMouseState(state:String):void {
-            if (_mouseState == state) {
-                return;
-            }
-            _mouseState = state;
-            invalidate(InvalidationType.STATE);
-        }
-
-        protected function mouseEventHandler(event:MouseEvent):void {
-            if (event.type == MouseEvent.ROLL_OVER) {
-                setMouseState("over");
-            } else if (event.type == MouseEvent.ROLL_OUT) {
-                setMouseState("up");
-            }
-        }
-
         override protected function draw():void {
             if (isInvalid(InvalidationType.STYLES, InvalidationType.STATE)) {
                 drawTextFormat();
@@ -239,11 +217,7 @@ package simplyFL.controls {
         protected function drawBackground():void {
             var bg:DisplayObject = _background;
 
-            var styleName:String = (enabled ? _mouseState : "disabled") + "Skin";
-            if (stage && stage.focus == labelField) {
-                styleName = "overSkin";
-            }
-
+            var styleName:String = (enabled ? "up" : "disabled") + "Skin";
             _background = getDisplayObjectInstance(getStyle(styleName));
             if (_background == null) {
                 return;
@@ -282,11 +256,12 @@ package simplyFL.controls {
                     setSelection(0, labelField.length);
                 }
             }
-            invalidate(InvalidationType.STATE);
+            drawFocus(true);
         }
 
         protected function focusOutHandler(event:FocusEvent):void {
-            invalidate(InvalidationType.STATE);
+            setSelection(0, 0);
+            drawFocus(false);
         }
     }
 }

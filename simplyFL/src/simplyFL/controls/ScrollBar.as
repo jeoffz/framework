@@ -45,8 +45,6 @@ package simplyFL.controls {
     [Style(name="repeatDelay", type="Number")]
     [Style(name="repeatInterval", type="Number")]
 
-    [Style(name="width", type="Number")]
-    [Style(name="height", type="Number")]
     [Style(name="arrowHeight", type="Number")]
 
     //--------------------------------------
@@ -109,9 +107,33 @@ package simplyFL.controls {
             repeatInterval: "repeatInterval"
         };
 
-        public function ScrollBar(uiStyleName:String = null) {
-            super(uiStyleName);
-            setChildStyles();
+        public function ScrollBar(uiStyleObj:Object = null) {
+            super(uiStyleObj);
+        }
+
+        override protected function configUI():void {
+            super.configUI();
+
+            track = new BaseButton();
+            track.autoRepeat = true;
+            addChild(track);
+
+            thumb = new Button();
+            thumb.label = "";
+            addChild(thumb);
+
+            downArrow = new BaseButton();
+            downArrow.autoRepeat = true;
+            addChild(downArrow);
+
+            upArrow = new BaseButton();
+            upArrow.autoRepeat = true;
+            addChild(upArrow);
+
+            upArrow.addEventListener(ComponentEvent.BUTTON_DOWN, scrollPressHandler, false, 0, true);
+            downArrow.addEventListener(ComponentEvent.BUTTON_DOWN, scrollPressHandler, false, 0, true);
+            track.addEventListener(ComponentEvent.BUTTON_DOWN, scrollPressHandler, false, 0, true);
+            thumb.addEventListener(MouseEvent.MOUSE_DOWN, thumbPressHandler, false, 0, true);
         }
 
         protected function setChildStyles():void {
@@ -148,6 +170,7 @@ package simplyFL.controls {
             _enabled = value;
             downArrow.enabled = track.enabled = thumb.enabled = upArrow.enabled = enabled;
             thumb.visible = enabled;
+            mouseEnabled = enabled;
             invalidate(InvalidationType.STATE);
         }
 
@@ -169,7 +192,7 @@ package simplyFL.controls {
             }
             _minScrollPosition = value;
             setScrollPosition(_scrollPosition, false);
-            updateThumb();
+            invalidate(InvalidationType.TEMP);
         }
 
         public function get maxScrollPosition():Number {
@@ -182,7 +205,7 @@ package simplyFL.controls {
             }
             _maxScrollPosition = value;
             setScrollPosition(_scrollPosition, false);
-            updateThumb();
+            invalidate(InvalidationType.TEMP);
         }
 
         public function get pageSize():Number {
@@ -190,9 +213,9 @@ package simplyFL.controls {
         }
 
         public function set pageSize(value:Number):void {
-            if (value > 0 && value != _pageSize) {
+            if (value != _pageSize) {
                 _pageSize = value;
-                updateThumb();
+                invalidate(InvalidationType.TEMP);
             }
         }
 
@@ -216,16 +239,22 @@ package simplyFL.controls {
             }
         }
 
+        public function setScrollProperties(pageSize:Number, minScrollPosition:Number, maxScrollPosition:Number):void {
+            _pageSize = pageSize;
+            _minScrollPosition = minScrollPosition;
+            _maxScrollPosition = maxScrollPosition;
+            // ensure our scroll position is still in range:
+            setScrollPosition(_scrollPosition, false);
+            invalidate(InvalidationType.TEMP);
+        }
+
         public function get direction():String {
             return _direction;
         }
 
         public function set direction(value:String):void {
-            if (_direction == value) {
-                return;
-            }
+            if (_direction == value) return;
             _direction = value;
-            scaleY = 1;
 
             var horizontal:Boolean = _direction == ScrollBarDirection.HORIZONTAL;
             if (horizontal && rotation == 0) {
@@ -238,34 +267,12 @@ package simplyFL.controls {
             invalidate(InvalidationType.SIZE);
         }
 
-        override protected function configUI():void {
-            super.configUI();
-
-            track = new BaseButton();
-            track.autoRepeat = true;
-            addChild(track);
-
-            thumb = new Button();
-            thumb.label = "";
-            addChild(thumb);
-
-            downArrow = new BaseButton();
-            downArrow.autoRepeat = true;
-            addChild(downArrow);
-
-            upArrow = new BaseButton();
-            upArrow.autoRepeat = true;
-            addChild(upArrow);
-
-            upArrow.addEventListener(ComponentEvent.BUTTON_DOWN, scrollPressHandler, false, 0, true);
-            downArrow.addEventListener(ComponentEvent.BUTTON_DOWN, scrollPressHandler, false, 0, true);
-            track.addEventListener(ComponentEvent.BUTTON_DOWN, scrollPressHandler, false, 0, true);
-            thumb.addEventListener(MouseEvent.MOUSE_DOWN, thumbPressHandler, false, 0, true);
-        }
-
         override protected function draw():void {
             if (isInvalid(InvalidationType.SIZE)) {
                 drawBackground();
+                invalidate(InvalidationType.TEMP, false);
+            }
+            if (isInvalid(InvalidationType.TEMP)) {
                 updateThumb();
             }
             if (isInvalid(InvalidationType.STYLES)) {
@@ -337,11 +344,11 @@ package simplyFL.controls {
             if (fireEvent) {
                 dispatchEvent(new ScrollEvent(_direction, scrollPosition - oldPosition, scrollPosition));
             }
-            updateThumb();
+            invalidate(InvalidationType.TEMP);
         }
 
         protected function drawBackground():void {
-            var w:Number = Number(getStyle("width"));
+            var w:Number = super.width;
             var arrowH:Number = Number(getStyle("arrowHeight"));
             var h:Number = super.height;
             upArrow.setSize(w, arrowH);
@@ -360,7 +367,7 @@ package simplyFL.controls {
                 thumb.height = 12;
                 thumb.visible = false;
             } else {
-                thumb.height = Math.max(13, _pageSize / per * track.height);
+                thumb.height = Math.max(12, _pageSize / per * track.height);
                 if (_maxScrollPosition == _minScrollPosition) {
                     thumb.y = track.y;
                 } else {

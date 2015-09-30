@@ -34,7 +34,9 @@ package simplyFL.core {
         protected var _width:Number;
         protected var _height:Number;
 
-        public function UIComponent(uiStyleName:String = null) {
+        protected var uiFocusRect:DisplayObject;
+
+        public function UIComponent(uiStyleObj:Object = null) {
             super();
 
             tabEnabled = false;
@@ -46,10 +48,16 @@ package simplyFL.core {
             sharedStyles = {};
 
             StyleManager.registerInstance(this);
-            if (uiStyleName == null) {
-                uiStyleName = StyleManager.getComponentUiStyle(this);
+            if (uiStyleObj == null) {
+                uiStyle = StyleManager.getComponentUiStyle(this);
+            } else if(uiStyleObj is String) {
+                uiStyle = uiStyleObj as String;
+            } else {
+                setStyles(uiStyleObj);
+                var w:Number = getStyle("width") as Number;
+                var h:Number = getStyle("height") as Number;
+                setSize(w, h);
             }
-            uiStyle = uiStyleName;
 
             configUI();
             invalidate(InvalidationType.ALL);
@@ -198,6 +206,27 @@ package simplyFL.core {
             // common values include all, size, enabled, styles, state
             // draw should call super or validate when finished updating
             validate();
+        }
+
+        public function drawFocus(focused:Boolean):void {
+            //Remove uiFocusRect if focus is turned off
+            if (uiFocusRect != null && contains(uiFocusRect)) {
+                removeChild(uiFocusRect);
+                uiFocusRect = null;
+            }
+            //Add focusRect to stage, and resize.  If component is focused.
+            if (focused) {
+                uiFocusRect = getDisplayObjectInstance(getStyle("focusRectSkin")) as Sprite;
+                if (uiFocusRect == null) { return; }
+                var focusPadding:Number = Number(getStyle("focusRectPadding"));
+
+                uiFocusRect.x = -focusPadding;
+                uiFocusRect.y = -focusPadding;
+                uiFocusRect.width = width + (focusPadding*2);
+                uiFocusRect.height = height + (focusPadding*2);
+
+                addChildAt(uiFocusRect, 0);
+            }
         }
 
         protected function callLater():void {

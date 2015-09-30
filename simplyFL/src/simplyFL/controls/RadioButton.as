@@ -36,12 +36,10 @@ package simplyFL.controls {
     [Style(name="textFormat", type="flash.text.TextFormat")]
     [Style(name="disabledTextFormat", type="flash.text.TextFormat")]
 
-    [Style(name="width", type="Number")]
-    [Style(name="height", type="Number")]
-
     //--------------------------------------
     //  Class description
     //--------------------------------------
+
     public class RadioButton extends Button {
 
         protected var _data:Object;
@@ -50,8 +48,8 @@ package simplyFL.controls {
 
         protected var defaultGroupName:String = "RadioButtonGroup";
 
-        public function RadioButton(uiStyleName:String = null) {
-            super(uiStyleName);
+        public function RadioButton(uiStyleObj:Object = null) {
+            super(uiStyleObj);
             groupName = defaultGroupName;
         }
 

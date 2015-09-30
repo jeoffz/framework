@@ -11,13 +11,14 @@ package simplyFL.skins {
     import flash.utils.ByteArray;
 
     import simplyFL.containers.SimplePanel;
-
     import simplyFL.controls.BaseButton;
     import simplyFL.controls.Button;
     import simplyFL.controls.CheckBox;
     import simplyFL.controls.RadioButton;
     import simplyFL.controls.ScrollBar;
+    import simplyFL.controls.TextArea;
     import simplyFL.controls.TextInput;
+    import simplyFL.controls.TextScrollBar;
     import simplyFL.core.Label;
     import simplyFL.managers.StyleManager;
 
@@ -36,6 +37,11 @@ package simplyFL.skins {
 
             var loader:Loader = new Loader();
             loader.contentLoaderInfo.addEventListener(Event.COMPLETE, function onComplete(event:Event):void {
+
+                var focusStyleObj:Object = {
+                    focusRectSkin: "As3Component_focusRectSkin",
+                    focusRectPadding: 1
+                };
 
                 // set BaseButton Skins
                 var styleObj:Object = {
@@ -107,12 +113,12 @@ package simplyFL.skins {
                     width: 100, height: 22,
                     upSkin: "As3Component_TextInput_upSkin",
                     disabledSkin: "As3Component_TextInput_disabledSkin",
-                    overSkin: "As3Component_TextInput_overSkin",
                     textPadding: 0,
                     embedFonts: false,
                     textFormat: textFormat,
                     disabledTextFormat: disabledTextFormat
                 };
+                styleObj = StyleManager.mergeStyles(styleObj, focusStyleObj);
                 StyleManager.registerStyles(TextInput, "As3Component_TextInput", styleObj);
                 StyleManager.setComponentUiStyle(TextInput, "As3Component_TextInput");
 
@@ -135,10 +141,28 @@ package simplyFL.skins {
                     thumbDownSkin: "As3Component_ScrollBar_thumbDownSkin",
                     thumbOverSkin: "As3Component_ScrollBar_thumbOverSkin",
                     thumbUpSkin: "As3Component_ScrollBar_thumbUpSkin",
+                    thumbIcon: "As3Component_ScrollBar_thumbIcon",
                     repeatDelay: 500, repeatInterval: 35
                 };
                 StyleManager.registerStyles(ScrollBar, "As3Component_ScrollBar", styleObj);
                 StyleManager.setComponentUiStyle(ScrollBar, "As3Component_ScrollBar");
+                // set TextScrollBar Skins
+                StyleManager.registerStyles(TextScrollBar, "As3Component_TextScrollBar", styleObj);
+                StyleManager.setComponentUiStyle(TextScrollBar, "As3Component_TextScrollBar");
+
+                // set TextArea Skins
+                styleObj = StyleManager.mergeStyles({
+                    width: 180, height: 200,
+                    scrollBarWidth: 15,
+                    upSkin: "As3Component_TextArea_upSkin",
+                    disabledSkin: "As3Component_TextArea_disabledSkin",
+                    textPadding: 3,
+                    embedFonts: false,
+                    textFormat: textFormat,
+                    disabledTextFormat: disabledTextFormat
+                }, styleObj, focusStyleObj);
+                StyleManager.registerStyles(TextArea, "As3Component_TextArea", styleObj);
+                StyleManager.setComponentUiStyle(TextArea, "As3Component_TextArea");
 
                 // set SimplePanel Skins
                 styleObj = {
